@@ -13,9 +13,7 @@ testSetActivities <- 'test/y_test.txt'
 testSetSubjects <- 'test/subject_test.txt'
 
 
-features <- NULL
-features.labels <- NULL
-features.cleanLabels <- NULL
+data.all <- NULL
 
 # Checks if all required data files exists/extracted
 dataFilesExist <- function(f){
@@ -62,7 +60,7 @@ extractRequiredData <- function(){
 	message('Extracting Data from Data Files......')
 
 	features.labels <- read.table(dataFiles$featuresFile, col.names=c('id', 'labels'))
-	activities.labels <- read.table(dataFiles$activitiesFile, col.names=c('id', 'activities'))
+	activities.labels <- read.table(dataFiles$activitiesFile, col.names=c('id', 'labels'))
 
 	# Coerce features.labels to string to perform some cleanup
 	features.labels$labels <- as.character(features.labels$labels)
@@ -74,17 +72,38 @@ extractRequiredData <- function(){
 	features.cleanLabels <- sub('[Mm][Ee][Aa][Nn]', 'Mean',features.cleanLabels)
 	features.cleanLabels <- sub('[Ss][Tt][Dd]', 'Std',features.cleanLabels)
 
-	
+	# Load both the training and test datasets including the subjects and activities
+	# Filter only the Mean/Std Variables.
+	data.trainSet <- read.table(dataFiles$trainingSetData)[,features.required]
+	colnames(data.trainSet)<-features.cleanLabels
+	data.trainSetSubjects <- read.table(dataFiles$trainingSetSubjects, col.names=c('subject'))
+	data.trainSetActivities <- read.table(dataFiles$trainingSetActivities, col.names=c('activity'))
+	# bind the subject and activity vars with the features vars
+	data.trainSet <- cbind(data.trainSetSubjects, data.trainSetActivities, data.trainSet )
 
-	
+	data.testSet <- read.table(dataFiles$testSetData)[,features.required]
+	colnames(data.testSet)<-features.cleanLabels
+	data.testSetSubjects <- read.table(dataFiles$testSetSubjects, col.names=c('subject'))
+	data.testSetActivities <- read.table(dataFiles$testSetActivities, col.names=c('activity'))
+	# bind the subject and activity vars with the features vars
+	data.testSet <- cbind(data.testSetSubjects, data.testSetActivities, data.testSet )
 
 
+	message('Merging and Summarizing Data......')
+	# Merge the training and test sets
+	data.all <- rbind(data.trainSet, data.testSet)
+
+	# Convert subject and activity to factors(grouping)
+	data.all$subject <- as.factor(data.all$subject)
+	data.all$activity <- factor(data.all$activity, levels=activities.labels$id, labels=activities.labels$labels)
+
+	data.all
 }
 
 # Putting it all togethter
 main <- function(){
 	downloadAndUnzipDataFile()
-	extractRequiredData()
+	data.all <- extractRequiredData()
 }
 
 main()
