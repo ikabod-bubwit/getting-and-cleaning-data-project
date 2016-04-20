@@ -3,7 +3,7 @@
  The R script, `DownloadExtractCleanupAndSummarizeData.R` generates `tidyData.csv` a clean and summarized version of the data downloaded 
 from [here](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
 
- The following steps were performed when generating the output `tidyData.csv`
+ The following steps were performed when generating the output [`tidyData.csv`](https://github.com/ikabod-bubwit/getting-and-cleaning-data-project/blob/master/tidyData.csv)
  
 1. **Download and Unzip the dataset** if data does not already exist in the working directory
 2. **Load the activity and feature data** from 'activity_labels.txt' and 'features.txt' files.
