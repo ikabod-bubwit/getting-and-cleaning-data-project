@@ -94,9 +94,9 @@ extractRequiredData <- function(dataFiles){
 main <- function(){
 	dataFiles <- downloadAndUnzipDataFile()
 	data.summarized <- extractRequiredData(dataFiles)
-	View(data.summarized)
-	cat ("Press [enter] to continue")
-	b <- scan("stdin", character(), n=1)
+	# View(data.summarized)
+	# cat ("Press [enter] to continue")
+	# b <- scan("stdin", character(), n=1)
 }
 
 main()
