@@ -1,9 +1,9 @@
 # getting-and-cleaning-data-project
  Coursera Project on Getting and Cleaning Data in R.
- The R script, `DownloadExtractCleanupAndSummarizeData.R` generates `tidyData.csv` a clean and summarized version of the data downloaded 
+ The R script, [`run_analysis.R`](https://github.com/ikabod-bubwit/getting-and-cleaning-data-project/blob/master/run_analysis.R) generates `tidyData.csv` a clean and summarized version of the data downloaded 
 from [here](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip)
 
- The following steps were performed when generating the output [`tidyData.csv`](https://github.com/ikabod-bubwit/getting-and-cleaning-data-project/blob/master/tidyData.csv)
+ The following steps were performed when generating the output [`tidyData.csv`](https://github.com/ikabod-bubwit/getting-and-cleaning-data-project/blob/master/tidyData.csv) and [`tidyData.txt`](https://github.com/ikabod-bubwit/getting-and-cleaning-data-project/blob/master/tidyData.txt) output files.
  
 1. **Download and Unzip the dataset** if data does not already exist in the working directory
 2. **Load the activity and feature data** from 'activity_labels.txt' and 'features.txt' files.
