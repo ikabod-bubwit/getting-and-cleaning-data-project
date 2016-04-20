@@ -5,7 +5,7 @@ from [here](https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%2
 
  The following steps were performed when generating the
  
-1. **Download the dataset** if it does not already exist in the working directory
+1. **Download and Unzip the dataset** if data does not already exist in the working directory
 2. **Load the activity and feature data** from 'activity_labels.txt' and 'features.txt' files.
 3. **Extract only mean or standard deviation features/variables** and generate a boolean mask.
 3. **Load both the training and test datasets** using the boolean mask generated from step 3 as a filter, this step uses the 
