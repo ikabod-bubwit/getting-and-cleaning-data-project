@@ -1,62 +1,43 @@
 library(dplyr)
 
-
-# Define Globals
-outputDir <- 'UCI HAR Dataset'
-activitiesFile <- 'activity_labels.txt'
-featuresFile <- 'features.txt'
-trainingSetData <- "train/X_train.txt"
-trainingSetActivities <- 'train/y_train.txt'
-trainingSetSubjects <- 'train/subject_train.txt'
-testSetData <- "test/X_test.txt"
-testSetActivities <- 'test/y_test.txt'
-testSetSubjects <- 'test/subject_test.txt'
-
-
-data.all <- NULL
-
-# Checks if all required data files exists/extracted
-dataFilesExist <- function(f){
-	# f <- c(activitiesFile, featuresFile)
-	# fpaths <- paste(outputDir, f, sep='/')
-	if (sum(as.numeric(file.exists(f))) != length(f)){
-		stop('Data Files are missing')	
-	}
-	TRUE
-}
-
 # Download and Unzip Data files
 downloadAndUnzipDataFile <- function(){
 	dataFileURL <- 'https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip'
 	outputDataFile <- 'UCI_HAR_Dataset.zip'
+	outputDir <- 'UCI HAR Dataset'
 	
 	message('Downloading and Unzipping Files......')
 	
 	# Download data file only once
 	if (!file.exists(outputDataFile)){
+		message('Start Downloading File[s]......')
 		download.file(dataFileURL, outputDataFile, method=='curl')
 	}
 	# Unzip file ot outputDir
 	if (!file.exists(outputDir)){
+		message('Start Unzipping Files......')
 		unzip(outputDataFile)
 	}
-}
-
-# Extract labels and data from data files
-extractRequiredData <- function(){
-	dataFilenames <- c(activitiesFile ,featuresFile ,trainingSetData ,trainingSetActivities 
-		,trainingSetSubjects ,testSetData ,testSetActivities ,testSetSubjects )
+	dataFilenames <- c('activity_labels.txt' ,'features.txt' ,"train/X_train.txt" ,'train/y_train.txt' 
+		,'train/subject_train.txt' ,"test/X_test.txt" ,'test/y_test.txt' ,'test/subject_test.txt' )
 	dataFilepaths <- paste(outputDir, dataFilenames, sep='/')
 	
 	# Test whether all data files exists
-	dataFilesExist(dataFilepaths)
+	if (sum(as.numeric(file.exists(dataFilepaths))) != length(dataFilepaths)){
+		stop('Data Files are missing')	
+	}	
 
 	dataFilenames <- c('activitiesFile' ,'featuresFile' ,'trainingSetData' ,'trainingSetActivities' 
 		,'trainingSetSubjects' ,'testSetData' ,'testSetActivities' ,'testSetSubjects' )
 	
 	dataFiles <- list()
-	for (i in 1:length(dataFilepaths)){ dataFiles[[dataFilenames[i]]] <- dataFilepaths[i]}
-	
+	for (i in 1:length(dataFilepaths)){ dataFiles[[dataFilenames[i]]] <- dataFilepaths[i]}	
+
+	dataFiles
+}
+
+# Extract labels and data from data files
+extractRequiredData <- function(dataFiles){
 	message('Extracting Data from Data Files......')
 
 	features.labels <- read.table(dataFiles$featuresFile, col.names=c('id', 'labels'))
@@ -97,13 +78,25 @@ extractRequiredData <- function(){
 	data.all$subject <- as.factor(data.all$subject)
 	data.all$activity <- factor(data.all$activity, levels=activities.labels$id, labels=activities.labels$labels)
 
-	data.all
+	# Summarizing the data
+	data.summarized <- data.all %>%  
+			# select(1:5) %>%  // For testing
+			group_by(subject, activity, add=TRUE)  %>%
+			summarise_each(funs(mean))
+
+	write.table(data.summarized, "tidyData.txt", row.names = FALSE, quote = FALSE)
+	write.csv(data.summarized, "tidyData.csv", row.names = FALSE, quote = FALSE)
+
+	data.summarized
 }
 
 # Putting it all togethter
 main <- function(){
-	downloadAndUnzipDataFile()
-	data.all <- extractRequiredData()
+	dataFiles <- downloadAndUnzipDataFile()
+	data.summarized <- extractRequiredData(dataFiles)
+	View(data.summarized)
+	cat ("Press [enter] to continue")
+	b <- scan("stdin", character(), n=1)
 }
 
 main()
